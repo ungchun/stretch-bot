@@ -1,6 +1,7 @@
 name: Talk Time Reminder
 
 on:
+  workflow_dispatch:
   schedule:
     # 오전 11:00 KST (UTC 02:00) - 월~금
     - cron: '0 2 * * 1-5'
