@@ -1,0 +1,46 @@
+name: Talk Time Reminder
+
+on:
+  schedule:
+    # 오전 11:00 KST (UTC 02:00) - 월~금
+    - cron: '0 2 * * 1-5'
+    # 오후 2:00 KST (UTC 05:00) - 월~금
+    - cron: '0 5 * * 1-5'
+    # 오후 3:30 KST (UTC 06:30) - 월~금
+    - cron: '30 6 * * 1-5'
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Random delay and send message
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          USERS: "U05JEHXU4BW U05J5EZ01PY U068EBNPZT4 U08PCETN3GB"
+        run: |
+          # 트리거 시간대별 랜덤 딜레이 (초)
+          # 11:00 트리거 → 0~90분 딜레이 (11:00~12:30)
+          # 14:00 트리거 → 0~60분 딜레이 (14:00~15:00)
+          # 15:30 트리거 → 0~90분 딜레이 (15:30~17:00)
+          HOUR=$(date -u +%H)
+          if [ "$HOUR" = "02" ]; then
+            MAX_DELAY=5400
+          elif [ "$HOUR" = "05" ]; then
+            MAX_DELAY=3600
+          else
+            MAX_DELAY=5400
+          fi
+
+          DELAY=$((RANDOM % MAX_DELAY))
+          echo "Waiting ${DELAY} seconds before sending..."
+          sleep $DELAY
+
+          MESSAGE="☕ 잠깐, 토크 타임 — 키보드에서 손 떼고 팀원들과 얘기해보세요."
+
+          for USER_ID in $USERS; do
+            curl -s -X POST https://slack.com/api/chat.postMessage \
+              -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d "{\"channel\":\"$USER_ID\",\"text\":\"$MESSAGE\"}"
+            echo ""
+          done

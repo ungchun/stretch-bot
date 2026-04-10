@@ -1,0 +1,25 @@
+name: Retro Reminder
+
+on:
+  schedule:
+    # 오후 5:30 KST (UTC 08:30) - 월~금
+    - cron: '30 8 * * 1-5'
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send retro reminder
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          USERS: "U05JEHXU4BW U05J5EZ01PY U068EBNPZT4 U08PCETN3GB"
+        run: |
+          MESSAGE="🌇 지금 당장 /retro 로 작업 기록 남겨주세요."
+
+          for USER_ID in $USERS; do
+            curl -s -X POST https://slack.com/api/chat.postMessage \
+              -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d "{\"channel\":\"$USER_ID\",\"text\":\"$MESSAGE\"}"
+            echo ""
+          done
