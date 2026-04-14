@@ -3,8 +3,9 @@ name: Retro Reminder
 on:
   workflow_dispatch:
   schedule:
-    # 오후 5:30 KST (UTC 08:30) - 월~금
-    - cron: '30 8 * * 1-5'
+    # 오후 5:23 KST (UTC 08:23) - 월~금
+    # 정각 대신 23분에 두어 GitHub Actions 스케줄 큐 경합 회피
+    - cron: '23 8 * * 1-5'
 
 jobs:
   send:

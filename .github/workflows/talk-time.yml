@@ -3,12 +3,13 @@ name: Talk Time Reminder
 on:
   workflow_dispatch:
   schedule:
-    # 오전 11:00 KST (UTC 02:00) - 월~금
-    - cron: '0 2 * * 1-5'
-    # 오후 2:00 KST (UTC 05:00) - 월~금
-    - cron: '0 5 * * 1-5'
-    # 오후 4:00 KST (UTC 07:00) - 월~금
-    - cron: '0 7 * * 1-5'
+    # 정각 대신 어긋난 분에 두어 GitHub Actions 스케줄 큐 경합 회피
+    # 오전 11:07 KST (UTC 02:07) - 월~금
+    - cron: '7 2 * * 1-5'
+    # 오후 2:13 KST (UTC 05:13) - 월~금
+    - cron: '13 5 * * 1-5'
+    # 오후 4:11 KST (UTC 07:11) - 월~금
+    - cron: '11 7 * * 1-5'
 
 jobs:
   send:
